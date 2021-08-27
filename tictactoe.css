@@ -1,0 +1,44 @@
+#gameBox{
+    background-color: lightsteelblue;
+    width: 50%;
+    height: 500px;
+    margin: auto;
+    border: black;
+    border-style: solid;
+}
+
+#players{
+    background-color: cornflowerblue;
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+}
+
+#playerOne{
+    width: 49%;
+    height: 50px;
+    background-color: mediumblue;
+}
+
+#playerTwo{
+    width: 49%;
+    height: 50px;
+    background-color: rgb(199, 21, 45);
+}
+
+#playerDivider{
+    width: 2%;
+    height: 50px;
+    background-color: black;
+}
+
+#gameBoard{
+
+    background-color: rgb(92, 92, 250);
+    width: 250px;
+    height: 300px;
+    margin: auto;
+    margin-top: 5%;
+}
+
