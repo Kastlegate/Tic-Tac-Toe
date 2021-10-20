@@ -24,7 +24,7 @@ const gameboard = (() => {
       }    
       
       //for statement to run through gameBoxes and check for winner
-      for
+      //for
    }
 
    
