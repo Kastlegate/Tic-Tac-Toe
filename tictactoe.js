@@ -18,51 +18,69 @@ const gameController = (() => {
    let playerTwoLoss = 0;
    
    //initializing the two players
-   const user1 = player(window. prompt("Enter your name: "), 'X');
-   const user2 = player('Lt. Commander Data', 'O');
+   //getting the user's name
+   let userName = window.prompt("Enter your name: ")
+   
+   //if else checking if a user name was entered
+   if (userName == "" || userName == null){
+      var user1 = player('Player 1', 'X');
+      document.getElementById("playerOneName").textContent = user1.getName();
+      console.log("TEST 1 " + user1.getName());    
+   }
+   else{
+      var user1 = player(userName, 'X');
+      document.getElementById("playerOneName").textContent = user1.getName();
+      
+   }
 
-   document.getElementById("playerOneName").textContent = user1.getName();
+   let user2 = player('Lt. Commander Data', 'O');   
    document.getElementById("playerTwoName").textContent = user2.getName();
 
-
-
-
-   // array that stores the current plays 
+   // array for storing the current plays 
    let checkForWinnerArray = [".", ".", ".", ".", ".", ".", ".", ".", "."];
 
-   //creating buttons for each box in the gameboard grid
+   //creating button events for each box in the gameboard grid
    function gameBoxButton (){
       let thisDataID = this.getAttribute("data-id");
 
-      //if else to assign player squares
+      //assign player squares
       if (this.textContent == ""){
+         // User's play
          if (playerTurnToggle == 1){
-            this.textContent = user1.getxoro();
 
+            this.textContent = user1.getxoro();
             checkForWinnerArray[thisDataID] = user1.getxoro();
             console.log("array test", checkForWinnerArray)
-
             ++turnsGoneBy;
             console.log(user1.getName(), "changed data-id:", thisDataID, "to x.")
             console.log("Number of turns gone by:", turnsGoneBy)
             playerTurnToggle = 2;
             
-         }
+            let deleteMe = 1;
+            //while loop to get the computer's play
+            while(playerTurnToggle == 2 && turnsGoneBy != 9){
+               const random = Math.floor(Math.random() * 8) + 1;
+               
+               console.log("Computer attempts", deleteMe)
+               ++deleteMe;
+               
+               if(document.getElementById("gameBoxId-" + random).textContent == ""){
 
-         else if (playerTurnToggle == 2){
-            this.textContent = user2.getxoro();
-
-            checkForWinnerArray[thisDataID] = user2.getxoro();
-            console.log("array test", checkForWinnerArray)
-            ++turnsGoneBy;
-            console.log(user2.getName(), "changed data-id:", thisDataID, "to o.")
-            console.log("Number of turns gone by:", turnsGoneBy)
-            playerTurnToggle = 1;
-         }
+                  document.getElementById("gameBoxId-" + random).textContent = user2.getxoro();                
+                  checkForWinnerArray[random] = user2.getxoro();
+                  console.log("array test", checkForWinnerArray)
+                  ++turnsGoneBy;
+                  console.log(user2.getName(), "changed data-id:", document.getElementById("gameBoxId-" + random).getAttribute("data-id"), "to o.")
+                  console.log("Number of turns gone by:", turnsGoneBy)
+                  playerTurnToggle = 1;
+                  }
+               }
+               deleteMe = 1;            
+         }         
       }
 
       // statement to stop the same square from being clicked more than once
-      else if (this.textContent == "x" || this.textContent == "o"){
+      else {
          console.log("The player cannot choose a square that has already been changed")
       }
 
@@ -72,6 +90,7 @@ const gameController = (() => {
          winner = winnerName;
          console.log("winner is", winner)
 
+         //Incrementing the User's score and Decrementing the Computer's
          if(winnerScoreGoesUpOne == "X")
          {
             ++playerOneScore;
@@ -80,6 +99,7 @@ const gameController = (() => {
             document.getElementById("PlayerTwoScore").textContent = "Win: " + playerTwoScore + " | Loss: " + playerTwoLoss;
          }
 
+         //Incrementing the Computer's score and decrementing the User's
          else if(winnerScoreGoesUpOne == "O")
          {
             ++playerTwoScore;
@@ -88,11 +108,11 @@ const gameController = (() => {
             document.getElementById("PlayerTwoScore").textContent = "Win: " + playerTwoScore + " | Loss: " + playerTwoLoss;
          }
          
-
+         // forEach statement that resets the gameboard
          let i = 0;
          checkForWinnerArray.forEach(element => {
             
-            document.getElementById(i).textContent = "";
+            document.getElementById("gameBoxId-" + i).textContent = "";
             checkForWinnerArray[i]= "";
             turnsGoneBy = 0;
             playerTurnToggle = 1;
@@ -111,6 +131,7 @@ const gameController = (() => {
          || checkForWinnerArray[0] == "X" && checkForWinnerArray[4] == "X" && checkForWinnerArray[8] == "X"
          || checkForWinnerArray[2] == "X" && checkForWinnerArray[4] == "X" && checkForWinnerArray[6] == "X"){
 
+            alert(user1.getName() + " has won! Congratulations!!"); 
             gameOver(user1.getName(), user1.getxoro());
       }
       
@@ -124,12 +145,14 @@ const gameController = (() => {
          || checkForWinnerArray[0] == "O" && checkForWinnerArray[4] == "O" && checkForWinnerArray[8] == "O"
          || checkForWinnerArray[2] == "O" && checkForWinnerArray[4] == "O" && checkForWinnerArray[6] == "O"){
 
+            alert(user2.getName() + " has won! Better luck next time!"); 
             gameOver(user2.getName(), user2.getxoro());
       }
-      
+      //Tie game
       if(turnsGoneBy == 9){
-         console.log("This game was a tie")
-         gameOver("No one!")
+         alert("No one won! Try again.");
+         gameOver("No one won! Try again.");
+         playerTurnToggle = 1;
       }
    }
 
@@ -155,7 +178,7 @@ const gameboard = (() => {
    //Creates the grid on the Game Board. Gameboxes are the individual squares in the grid
    _gameBoardArray.forEach(element => {
       let gameBox = document.createElement("div");
-      gameBox.setAttribute('id', _gameBoardArray.indexOf(element));
+      gameBox.setAttribute('id', "gameBoxId-" + _gameBoardArray.indexOf(element));
       gameBox.dataset.id = _gameBoardArray.indexOf(element);
       gameBox.classList.add("gameBoxes");
       document.getElementById("gameBoard").appendChild(gameBox);
