@@ -1,7 +1,31 @@
+//creating a player factory. xoro = x or o
+const player = (name, xoro) => {
+   const getName = () => name;
+   const getxoro = () => xoro;
+
+   return{
+      getName, getxoro
+   }
+};
+
 //An object that controls the game
 const gameController = (() => {
    let turnsGoneBy = 0;
-   let playerTurn = 1;
+   let playerTurnToggle = 1;
+   let playerOneScore = 0;
+   let playerOneLoss = 0;
+   let playerTwoScore = 0;
+   let playerTwoLoss = 0;
+   
+   //initializing the two players
+   const user1 = player(window. prompt("Enter your name: "), 'X');
+   const user2 = player('Lt. Commander Data', 'O');
+
+   document.getElementById("playerOneName").textContent = user1.getName();
+   document.getElementById("playerTwoName").textContent = user2.getName();
+
+
+
 
    // array that stores the current plays 
    let checkForWinnerArray = [".", ".", ".", ".", ".", ".", ".", ".", "."];
@@ -12,7 +36,7 @@ const gameController = (() => {
 
       //if else to assign player squares
       if (this.textContent == ""){
-         if (playerTurn == 1){
+         if (playerTurnToggle == 1){
             this.textContent = user1.getxoro();
 
             checkForWinnerArray[thisDataID] = user1.getxoro();
@@ -21,11 +45,11 @@ const gameController = (() => {
             ++turnsGoneBy;
             console.log(user1.getName(), "changed data-id:", thisDataID, "to x.")
             console.log("Number of turns gone by:", turnsGoneBy)
-            playerTurn = 2;
+            playerTurnToggle = 2;
             
          }
 
-         else if (playerTurn == 2){
+         else if (playerTurnToggle == 2){
             this.textContent = user2.getxoro();
 
             checkForWinnerArray[thisDataID] = user2.getxoro();
@@ -33,7 +57,7 @@ const gameController = (() => {
             ++turnsGoneBy;
             console.log(user2.getName(), "changed data-id:", thisDataID, "to o.")
             console.log("Number of turns gone by:", turnsGoneBy)
-            playerTurn = 1;
+            playerTurnToggle = 1;
          }
       }
 
@@ -43,17 +67,35 @@ const gameController = (() => {
       }
 
       //function that anounces a winner and resets the gameboard
-      function gameOver(winner){
-
-         winner = winner;
+      function gameOver(winnerName, winnerScoreGoesUp){
+         winnerScoreGoesUpOne = winnerScoreGoesUp;
+         winner = winnerName;
          console.log("winner is", winner)
+
+         if(winnerScoreGoesUpOne == "X")
+         {
+            ++playerOneScore;
+            ++playerTwoLoss;
+            document.getElementById("PlayerOneScore").textContent = "Win: " + playerOneScore + " | Loss: " + playerOneLoss;
+            document.getElementById("PlayerTwoScore").textContent = "Win: " + playerTwoScore + " | Loss: " + playerTwoLoss;
+         }
+
+         else if(winnerScoreGoesUpOne == "O")
+         {
+            ++playerTwoScore;
+            ++playerOneLoss;
+            document.getElementById("PlayerOneScore").textContent = "Win: " + playerOneScore + " | Loss: " + playerOneLoss;
+            document.getElementById("PlayerTwoScore").textContent = "Win: " + playerTwoScore + " | Loss: " + playerTwoLoss;
+         }
+         
+
          let i = 0;
          checkForWinnerArray.forEach(element => {
             
             document.getElementById(i).textContent = "";
             checkForWinnerArray[i]= "";
             turnsGoneBy = 0;
-            playerTurn = 1;
+            playerTurnToggle = 1;
             ++i
          })
          i = 0;
@@ -69,7 +111,7 @@ const gameController = (() => {
          || checkForWinnerArray[0] == "X" && checkForWinnerArray[4] == "X" && checkForWinnerArray[8] == "X"
          || checkForWinnerArray[2] == "X" && checkForWinnerArray[4] == "X" && checkForWinnerArray[6] == "X"){
 
-            gameOver(user1.getName());
+            gameOver(user1.getName(), user1.getxoro());
       }
       
       // Player 2 wins
@@ -82,7 +124,7 @@ const gameController = (() => {
          || checkForWinnerArray[0] == "O" && checkForWinnerArray[4] == "O" && checkForWinnerArray[8] == "O"
          || checkForWinnerArray[2] == "O" && checkForWinnerArray[4] == "O" && checkForWinnerArray[6] == "O"){
 
-            gameOver(user2.getName());
+            gameOver(user2.getName(), user2.getxoro());
       }
       
       if(turnsGoneBy == 9){
@@ -95,19 +137,8 @@ const gameController = (() => {
    
 })();
 
-//creating a player factory. xoro = x or o
-const player = (name, xoro) => {
-   const getName = () => name;
-   const getxoro = () => xoro;
 
-   return{
-      getName, getxoro
-   }
-};
 
-//initializing the two players
-const user1 = player('Player 1', 'X');
-const user2 = player('Player 2', 'O');
 
 //An object that creates and displays the game's board
 const gameboard = (() => {
